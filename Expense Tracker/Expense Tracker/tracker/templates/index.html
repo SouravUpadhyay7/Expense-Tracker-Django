@@ -1,0 +1,230 @@
+{% extends "base.html"%}
+{% block start %}
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        background: linear-gradient(135deg, #121212, #1e1e1e);
+        color: #e0e0e0;
+        font-family: 'Inter', 'Arial', sans-serif;
+        padding: 20px;
+    }
+
+    .dashboard-container {
+        max-width: 600px;
+        margin: 0 auto;
+        background: rgba(30, 30, 30, 0.8);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    }
+
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .logout-btn {
+        background: linear-gradient(135deg, #ff4a4a, #d63031);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 50px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .logout-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .balance-container {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .balance-container h2 {
+        color: #4a9fff;
+    }
+
+    .inc-exp-container {
+        display: flex;
+        justify-content: space-between;
+        background-color: #252525;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+    }
+
+    .inc-exp-container div {
+        text-align: center;
+        flex: 1;
+    }
+
+    .money {
+        font-size: 1.2em;
+        font-weight: bold;
+    }
+
+    .plus {
+        color: #2ecc71;
+    }
+
+    .minus {
+        color: #e74c3c;
+    }
+
+    .transaction-history {
+        margin-bottom: 30px;
+    }
+
+    .transaction-list {
+        list-style: none;
+    }
+
+    .transaction-list li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #1e1e1e;
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 10px;
+        position: relative;
+    }
+
+    .delete-btn {
+        color: #ff4a4a;
+        text-decoration: none;
+        margin-left: 10px;
+    }
+
+    .transaction-form {
+        background-color: #252525;
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    .form-control {
+        margin-bottom: 15px;
+    }
+
+    .form-control label {
+        display: block;
+        margin-bottom: 5px;
+        color: #7e7e7e;
+    }
+
+    .form-control input {
+        width: 100%;
+        padding: 10px;
+        background-color: #1e1e1e;
+        border: 2px solid #333;
+        border-radius: 10px;
+        color: #e0e0e0;
+    }
+
+    .form-submit-btn {
+        background: linear-gradient(135deg, #4a9fff, #2980b9);
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 50px;
+        width: 100%;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .form-submit-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    @media (max-width: 600px) {
+        .dashboard-container {
+            padding: 20px;
+        }
+
+        .inc-exp-container {
+            flex-direction: column;
+        }
+
+        .inc-exp-container div {
+            margin-bottom: 15px;
+        }
+    }
+</style>
+
+<div class="dashboard-container">
+    <div class="dashboard-header">
+        <div class="user-info">
+            <span>{{request.user.first_name}} {{request.user.last_name}}</span>
+            <span>({{request.user.username}})</span>
+        </div>
+        <a href="{% url 'logout_view' %}" class="logout-btn">Logout</a>
+    </div>
+
+    <div class="balance-container">
+        <h2>Your Balance</h2>
+        <h2>${{current_balance.current_balance}}</h2>
+    </div>
+
+    <div class="inc-exp-container">
+        <div>
+            <h4>Income</h4>
+            <p class="money plus">+${{income}}</p>
+        </div>
+        <div>
+            <h4>Expenses</h4>
+            <p class="money minus">${{expense}}</p>
+        </div>
+    </div>
+
+    <div class="transaction-history">
+        <h3>Transaction History</h3>
+        <ul class="transaction-list">
+            {% for transaction in transactions %}
+            <li class="{% if transaction.expense_type == 'DEBIT' %} minus {% else %} plus {% endif %}">
+                {{transaction.description}} 
+                <span>{{transaction.amount}}</span>
+                <a class="delete-btn" href="{% url 'delete_transaction' transaction.id %}">
+                    <i class="fas fa-trash-alt"></i>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div class="transaction-form">
+        <h3>Add New Transaction</h3>
+        <form method="POST" id="form">
+            {% csrf_token %}
+            <div class="form-control">
+                <label for="description">Description</label>
+                <input type="text" name="description" id="description" placeholder="Enter description..." required />
+            </div>
+            <div class="form-control">
+                <label for="amount">Amount 
+                    <small>(-100 = expense, 100 = income)</small>
+                </label>
+                <input type="number" name="amount" id="amount" placeholder="Enter amount..." required />
+            </div>
+            <button class="form-submit-btn" type="submit">Add Transaction</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

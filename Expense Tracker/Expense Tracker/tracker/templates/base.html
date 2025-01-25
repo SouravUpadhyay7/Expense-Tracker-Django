@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Book Management{% endblock %}</title>
+    
+    <!-- Styling -->
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg-dark: #121212;
+            --bg-medium: #1e1e1e;
+            --text-light: #e0e0e0;
+            --accent-blue: #4a9fff;
+            --accent-red: #ff4a4a;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-dark), var(--bg-medium));
+            color: var(--text-light);
+            font-family: 'Inter', 'Arial', sans-serif;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Toast/Message Styling */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .toast {
+            background: rgba(30, 30, 30, 0.9);
+            border-left: 4px solid var(--accent-blue);
+            color: var(--text-light);
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .toast-error {
+            border-left-color: var(--accent-red);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 600px) {
+            .toast-container {
+                top: 10px;
+                right: 10px;
+            }
+        }
+    </style>
+
+    <!-- External Libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
+</head>
+<body>
+    {% block start %}
+    {% endblock %}
+
+    <!-- Improved Message Display -->
+    {% if messages %}
+    <div class="toast-container">
+        {% for message in messages %}
+            <div class="toast {% if message.tags %}toast-{{ message.tags }}{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toasts = document.querySelectorAll('.toast');
+            toasts.forEach((toast, index) => {
+                setTimeout(() => {
+                    toast.style.animation = 'slideOut 0.3s ease-out';
+                    setTimeout(() => toast.remove(), 300);
+                }, (index + 1) * 3000);
+            });
+        });
+    </script>
+    {% endif %}
+</body>
+</html>

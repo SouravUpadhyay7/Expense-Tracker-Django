@@ -1,0 +1,166 @@
+{% extends "base.html"%}
+{% block start %}
+<div class="register-container">
+    <div class="register-form">
+        <h1>Register</h1>
+        <form method="POST" id="form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input 
+                    type="text" 
+                    name="username" 
+                    id="username" 
+                    placeholder="Choose a unique username" 
+                    required
+                />
+                <small class="form-hint">Unique username is required</small>
+            </div>
+            <div class="form-group">
+                <label for="first_name">First Name</label>
+                <input 
+                    type="text" 
+                    name="first_name" 
+                    id="first_name" 
+                    placeholder="Enter your first name" 
+                    required
+                />
+            </div>
+            <div class="form-group">
+                <label for="last_name">Last Name</label>
+                <input 
+                    type="text" 
+                    name="last_name" 
+                    id="last_name" 
+                    placeholder="Enter your last name" 
+                    required
+                />
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input 
+                    type="password" 
+                    name="password" 
+                    id="password" 
+                    placeholder="Create a strong password" 
+                    required
+                />
+            </div>
+            <p class="login-link">
+                Already have an account? 
+                <a href="{% url 'login_view' %}">Login</a>
+            </p>
+            <button class="register-btn" type="submit">Register</button>
+        </form>
+    </div>
+</div>
+
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #121212, #1e1e1e);
+        font-family: 'Inter', 'Arial', sans-serif;
+    }
+
+    .register-container {
+        width: 100%;
+        max-width: 400px;
+        padding: 20px;
+    }
+
+    .register-form {
+        background: rgba(30, 30, 30, 0.8);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        text-align: center;
+    }
+
+    h1 {
+        color: #4a9fff;
+        margin-bottom: 30px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        text-align: left;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        color: #7e7e7e;
+    }
+
+    input {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #333;
+        border-radius: 10px;
+        background-color: #252525;
+        color: #e0e0e0;
+        transition: all 0.3s ease;
+        outline: none;
+    }
+
+    input:focus {
+        border-color: #4a9fff;
+        box-shadow: 0 0 10px rgba(74, 159, 255, 0.3);
+    }
+
+    .form-hint {
+        color: #7e7e7e;
+        font-size: 0.8em;
+        margin-top: 5px;
+    }
+
+    .login-link {
+        color: #7e7e7e;
+        margin-bottom: 20px;
+    }
+
+    .login-link a {
+        color: #4a9fff;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .login-link a:hover {
+        color: #2980b9;
+    }
+
+    .register-btn {
+        background: linear-gradient(135deg, #2ecc71, #27ae60);
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+
+    .register-btn:hover {
+        background: linear-gradient(135deg, #27ae60, #2ecc71);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    @media (max-width: 600px) {
+        .register-form {
+            padding: 30px 20px;
+        }
+    }
+</style>
+{% endblock %}
